@@ -16,28 +16,28 @@ func (e *RepositoryNotMirror) Error() string {
 	return "Repository is not a mirror"
 }
 
-func (c *Controller) GetMirror(m config.Repository) (*gitea.Repository, error) {
-	repo, _, err := c.client.GetRepo(m.Owner, m.Name)
+func (c *Controller) GetMirror(r *config.Repository) (*gitea.Repository, error) {
+	repo, _, err := c.client.GetRepo(*r.Owner, r.Name)
 	if err != nil {
 		return nil, err
 	}
 	return repo, err
 }
 
-func (c *Controller) CreateMirror(source server.Server, r config.Repository) (*gitea.Repository, error) {
-	cloneURL, err := source.GetCloneURL(r.Owner, r.Name)
+func (c *Controller) CreateMirror(source server.Server, r *config.Repository) (*gitea.Repository, error) {
+	cloneURL, err := source.GetCloneURL(r)
 	if err != nil {
 		return nil, err
 	}
 
 	options := gitea.MigrateRepoOption{
-		RepoOwner:      r.Owner,
+		RepoOwner:      *r.Owner,
 		RepoName:       r.Name,
-		Private:        r.Private,
+		Private:        !*r.Public,
 		CloneAddr:      cloneURL,
 		AuthToken:      source.GetToken(),
 		Mirror:         true,
-		MirrorInterval: "0",
+		MirrorInterval: r.Interval.String(),
 	}
 
 	mirror, _, err := c.client.MigrateRepo(options)
@@ -45,20 +45,20 @@ func (c *Controller) CreateMirror(source server.Server, r config.Repository) (*g
 	return mirror, err
 }
 
-func (c *Controller) UpdateMirror(m config.Repository) error {
-	_, err := c.client.MirrorSync(m.Owner, m.Name)
+func (c *Controller) SyncMirror(r *config.Repository) error {
+	_, err := c.client.MirrorSync(*r.Owner, r.Name)
 
 	return err
 }
 
-func (c *Controller) StatusMirror(m config.Repository) (*time.Time, error) {
-	repo, _, err := c.client.GetRepo(m.Owner, m.Name)
+func (c *Controller) LastSynced(r *config.Repository) (*time.Time, error) {
+	repo, _, err := c.client.GetRepo(*r.Owner, r.Name)
 	if err != nil {
 		return nil, err
 	}
 
 	if !repo.Mirror {
-		return nil, fmt.Errorf("Repository is not a mirror: %s/%s", m.Owner, m.Name)
+		return nil, fmt.Errorf("Repository is not a mirror: %s/%s", *r.Owner, r.Name)
 	}
 
 	return &repo.MirrorUpdated, nil

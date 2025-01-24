@@ -21,7 +21,7 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:               "gitea-mirror",
-	Short:             "Update Gitea mirrors",
+	Short:             "Manage Gitea mirrors",
 	SilenceUsage:      true,
 	PersistentPreRunE: LoadConfig,
 	Version:           fmt.Sprintf("%s-%s (built %s)", version, commit, date),

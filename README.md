@@ -6,13 +6,45 @@ A simple utility to manage collections of Gitea repository mirrors, supporting e
 
 Configuration via `gitea-mirror.yaml` file. An example configuration is given in the `gitea-mirror.yaml.example` file.
 
-`source`: the upstream GitHub or Gitea instance to mirror from. `type: github` to use `github.com`; or just `url` for a Gitea instance.
+### `source`
 
-`target`: the downstream Gitea instance to mirror to. `url` is the URL of the Gitea instance.
+The upstream GitHub or Gitea instance to mirror from.
 
-`repositories`: a list of repositories to mirror, each identified by `owner` and `name`.
+`type`: set to `github` to use `github.com`.
 
-Required API tokens can be passed via `SOURCE_TOKEN` and `TARGET_TOKEN` environment variables, hardcoded via `token` key under `source` or `target`, or interactively prompted for at runtime.
+`url`: set to source from an upstream Gitea instance.
+
+### `target`
+
+The downstream Gitea instance to mirror to.
+
+`url` is the URL of the Gitea instance.
+
+### `defaults`
+
+Default values for repositories.
+
+`owner`: the default owner of repositories to mirror (default: unset).
+
+`interval`: default source sync interval (default: `0s` = disabled)
+
+`public`: (default: `false`).
+
+### `repositories`
+
+The list of repositories to mirror, including default overrides.
+
+`name`: (required) the name of the repository to mirror
+
+`owner`: (optional, if default set) the owner of the repository
+
+`public`: (optional) whether the mirrored repository should be public (default: `false`)
+
+`interval`: (optional) source sync interval
+
+## Authentication
+
+Required API tokens can be passed via `SOURCE_TOKEN` and `TARGET_TOKEN` environment variables, passed by argument, hardcoded via `token` key under `source` or `target`, or, if unset, will be interactively requested at runtime.
 
 ## Usage
 
@@ -22,10 +54,10 @@ Required API tokens can be passed via `SOURCE_TOKEN` and `TARGET_TOKEN` environm
 gitea-mirror create
 ```
 
-### Update repository mirrors
+### Synchronise repository mirrors
 
 ```shell
-gitea-mirror update
+gitea-mirror sync
 ```
 
 ### Check repository mirrors
@@ -34,10 +66,10 @@ gitea-mirror update
 gitea-mirror status
 ```
 
-### Debug configuration
+### Show configuration
 
 ```shell
-gitea-mirror debug
+gitea-mirror config
 ```
 
 Note: this *will* expose API tokens in the output.

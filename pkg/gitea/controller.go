@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"code.gitea.io/sdk/gitea"
+
+	"github.com/nexthink-oss/gitea-mirror/pkg/config"
 )
 
 type Controller struct {
@@ -33,7 +35,7 @@ func (g Controller) GetToken() string {
 	return g.token
 }
 
-func (g Controller) GetCloneURL(owner, name string) (string, error) {
-	repo, _, err := g.client.GetRepo(owner, name)
+func (c Controller) GetCloneURL(r *config.Repository) (string, error) {
+	repo, _, err := c.client.GetRepo(*r.Owner, r.Name)
 	return repo.CloneURL, err
 }

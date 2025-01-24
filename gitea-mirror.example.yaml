@@ -5,10 +5,14 @@ source:
 target:
   url: http://localhost:3000 # target is local gitea
 
+defaults:
+  owner: orgname
+  interval: 0s # no auto-sync
+  public: false
+
 repositories:
-  - owner: orgname
-    name: infrastructure.components
-  - owner: orgname
-    name: infrastructure.configurations
-  - owner: orgname
-    name: sdlc.gitops-catalog
+  - name: infrastructure.components
+  - name: infrastructure.configurations
+  - name: sdlc.gitops-catalog
+    public: true # override the default visibility
+    interval: 1h # override the default interval

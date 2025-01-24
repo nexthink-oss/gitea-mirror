@@ -34,11 +34,11 @@ func Status(cmd *cobra.Command, args []string) error {
 	}
 
 	for _, repo := range config.Repositories {
-		updated, err := target.StatusMirror(repo)
+		synced, err := target.LastSynced(&repo)
 		if err != nil {
 			fmt.Println(repo.Failure(err))
 		} else {
-			fmt.Println(repo.Success(updated.UTC().Format(time.RFC3339)))
+			fmt.Println(repo.Success(synced.UTC().Format(time.RFC3339)))
 		}
 	}
 

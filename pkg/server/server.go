@@ -1,7 +1,9 @@
 package server
 
+import "github.com/nexthink-oss/gitea-mirror/pkg/config"
+
 type Server interface {
 	GetType() string
 	GetToken() (token string)
-	GetCloneURL(owner, name string) (string, error)
+	GetCloneURL(*config.Repository) (string, error)
 }
