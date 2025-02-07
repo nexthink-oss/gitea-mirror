@@ -28,33 +28,15 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	cobra.OnInitialize(initViper)
+	// cobra.OnInitialize(initViper)
 
 	pFlags := rootCmd.PersistentFlags()
 
 	pFlags.StringArrayP("config-path", "P", []string{"."}, "configuration file path")
-	viper.BindPFlag("config-path", pFlags.Lookup("config-path"))
-
-	pFlags.StringP("config-name", "C", "gitea-mirror", "configuration file name")
-	viper.BindPFlag("config-name", pFlags.Lookup("config-name"))
-
-	pFlags.StringP("source-token", "S", "", "source API token")
-	viper.BindPFlag("source.token", pFlags.Lookup("source-token"))
-	viper.BindEnv("source.token", "SOURCE_TOKEN")
-
-	pFlags.StringP("target-token", "T", "", "target API token")
-	viper.BindPFlag("target.token", pFlags.Lookup("target-token"))
-	viper.BindEnv("target.token", "TARGET_TOKEN")
-
+	pFlags.StringP("config-name", "C", "gitea-mirror", "configuration file name (without extension)")
+	pFlags.StringP("source.token", "S", "", "source API token")
+	pFlags.StringP("target.token", "T", "", "target API token")
 	pFlags.StringP("owner", "o", "", "default owner")
-	viper.BindPFlag("owner", pFlags.Lookup("owner"))
-}
-
-func initViper() {
-	viper.SetEnvPrefix("GM")
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
-	viper.AutomaticEnv()      // read in environment variables that match bound variables
-	viper.AllowEmptyEnv(true) // respect empty environment variables
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -65,6 +47,14 @@ func Execute() {
 }
 
 func LoadConfig(cmd *cobra.Command, args []string) (err error) {
+	viper.BindPFlags(cmd.Flags())
+	viper.SetEnvPrefix("GM")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	viper.AutomaticEnv()      // read in environment variables that match bound variables
+	viper.AllowEmptyEnv(true) // respect empty environment variables
+	viper.BindEnv("source.token", "SOURCE_TOKEN")
+	viper.BindEnv("target.token", "TARGET_TOKEN")
+
 	config, err = cfg.LoadConfig(
 		viper.GetString("config-name"),
 		viper.GetStringSlice("config-path")...,

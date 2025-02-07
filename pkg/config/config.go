@@ -13,13 +13,13 @@ import (
 type Source struct {
 	Type  string `mapstructure:"type" yaml:"type,omitempty" default:"gitea"`
 	Url   string `mapstructure:"url" yaml:"url,omitempty"`
-	Token string `mapstructure:"token" yaml:"token"`
+	Token string `mapstructure:"token" yaml:"-"`
 }
 
 // Target is always a Gitea instance
 type Target struct {
 	Url   string `mapstructure:"url" yaml:"url" default:"http://localhost:3000"`
-	Token string `mapstructure:"token" yaml:"token"`
+	Token string `mapstructure:"token" yaml:"-"`
 }
 
 type Defaults struct {
