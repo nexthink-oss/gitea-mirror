@@ -45,6 +45,19 @@ func (c *Controller) CreateMirror(source server.Server, r *config.Repository) (*
 	return mirror, err
 }
 
+func (c *Controller) UpdateMirror(r *config.Repository) (*gitea.Repository, error) {
+	private := !*r.Public
+	interval := r.Interval.String()
+	options := gitea.EditRepoOption{
+		Private:        &private,
+		MirrorInterval: &interval,
+	}
+
+	repo, _, err := c.client.EditRepo(*r.Owner, r.Name, options)
+
+	return repo, err
+}
+
 func (c *Controller) SyncMirror(r *config.Repository) error {
 	_, err := c.client.MirrorSync(*r.Owner, r.Name)
 
