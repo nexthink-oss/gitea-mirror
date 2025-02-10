@@ -76,3 +76,9 @@ func (c *Controller) LastSynced(r *config.Repository) (*time.Time, error) {
 
 	return &repo.MirrorUpdated, nil
 }
+
+func (c *Controller) DeleteMirror(r *config.Repository) error {
+	_, err := c.client.DeleteRepo(*r.Owner, r.Name)
+
+	return err
+}
