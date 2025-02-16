@@ -33,7 +33,7 @@ func (c Controller) GetToken() string {
 }
 
 func (c Controller) IsPrivate(r *config.Repository) (bool, error) {
-	repo, _, err := c.client.Repositories.Get(c.ctx, *r.Owner, r.Name)
+	repo, _, err := c.client.Repositories.Get(c.ctx, r.Owner, r.Name)
 	if err != nil {
 		return true, err
 	}
@@ -42,7 +42,7 @@ func (c Controller) IsPrivate(r *config.Repository) (bool, error) {
 }
 
 func (c Controller) GetCloneURL(r *config.Repository) (string, error) {
-	repo, _, err := c.client.Repositories.Get(c.ctx, *r.Owner, r.Name)
+	repo, _, err := c.client.Repositories.Get(c.ctx, r.Owner, r.Name)
 
 	return *repo.CloneURL, err
 }

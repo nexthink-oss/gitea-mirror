@@ -36,6 +36,6 @@ func (g Controller) GetToken() string {
 }
 
 func (c Controller) GetCloneURL(r *config.Repository) (string, error) {
-	repo, _, err := c.client.GetRepo(*r.Owner, r.Name)
+	repo, _, err := c.client.GetRepo(r.Owner, r.Name)
 	return repo.CloneURL, err
 }

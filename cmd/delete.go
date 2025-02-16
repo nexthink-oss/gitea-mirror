@@ -10,7 +10,7 @@ import (
 )
 
 var deleteCmd = &cobra.Command{
-	Use:   "delete",
+	Use:   "delete [<repository> ...]",
 	Short: "Delete Gitea mirrors",
 	RunE:  DeleteMirrors,
 }
@@ -33,7 +33,7 @@ func DeleteMirrors(cmd *cobra.Command, args []string) (err error) {
 		return fmt.Errorf("NewController(%s): %w", config.Target.Url, err)
 	}
 
-	for _, repo := range config.Repositories {
+	for repo := range config.FilteredRepositories(args) {
 		if err = target.DeleteMirror(&repo); err != nil {
 			fmt.Println(repo.Failure(err))
 		} else {

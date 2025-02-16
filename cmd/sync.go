@@ -10,7 +10,7 @@ import (
 )
 
 var syncCmd = &cobra.Command{
-	Use:   "sync",
+	Use:   "sync [<repository> ...]",
 	Short: "Sync Gitea mirrors",
 	RunE:  SyncMirrors,
 }
@@ -23,7 +23,7 @@ func SyncMirrors(cmd *cobra.Command, args []string) (err error) {
 	var ctx = cmd.Context()
 
 	if config.Target.Token == "" {
-		if err := util.PromptForToken("Server API token", &config.Target.Token); err != nil {
+		if err := util.PromptForToken("Target API token", &config.Target.Token); err != nil {
 			return err
 		}
 	}
@@ -33,7 +33,7 @@ func SyncMirrors(cmd *cobra.Command, args []string) (err error) {
 		return err
 	}
 
-	for _, repo := range config.Repositories {
+	for repo := range config.FilteredRepositories(args) {
 		if err := target.SyncMirror(&repo); err != nil {
 			fmt.Println(repo.Failure(err))
 		} else {

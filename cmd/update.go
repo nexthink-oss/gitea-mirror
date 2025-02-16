@@ -10,7 +10,7 @@ import (
 )
 
 var updateCmd = &cobra.Command{
-	Use:   "update",
+	Use:   "update [<repository> ...]",
 	Short: "Update Gitea mirrors",
 	RunE:  UpdateMirrors,
 }
@@ -33,7 +33,7 @@ func UpdateMirrors(cmd *cobra.Command, args []string) (err error) {
 		return fmt.Errorf("NewController(%s): %w", config.Target.Url, err)
 	}
 
-	for _, repo := range config.Repositories {
+	for repo := range config.FilteredRepositories(args) {
 		if _, err = target.UpdateMirror(&repo); err != nil {
 			fmt.Println(repo.Failure(err))
 		} else {

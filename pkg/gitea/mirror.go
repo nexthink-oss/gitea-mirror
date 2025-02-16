@@ -17,7 +17,7 @@ func (e *RepositoryNotMirror) Error() string {
 }
 
 func (c *Controller) GetMirror(r *config.Repository) (*gitea.Repository, error) {
-	repo, _, err := c.client.GetRepo(*r.Owner, r.Name)
+	repo, _, err := c.client.GetRepo(r.Owner, r.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func (c *Controller) CreateMirror(source server.Server, r *config.Repository) (*
 	}
 
 	options := gitea.MigrateRepoOption{
-		RepoOwner:      *r.Owner,
+		RepoOwner:      r.Owner,
 		RepoName:       r.Name,
 		Private:        !*r.Public,
 		CloneAddr:      cloneURL,
@@ -53,32 +53,32 @@ func (c *Controller) UpdateMirror(r *config.Repository) (*gitea.Repository, erro
 		MirrorInterval: &interval,
 	}
 
-	repo, _, err := c.client.EditRepo(*r.Owner, r.Name, options)
+	repo, _, err := c.client.EditRepo(r.Owner, r.Name, options)
 
 	return repo, err
 }
 
 func (c *Controller) SyncMirror(r *config.Repository) error {
-	_, err := c.client.MirrorSync(*r.Owner, r.Name)
+	_, err := c.client.MirrorSync(r.Owner, r.Name)
 
 	return err
 }
 
 func (c *Controller) LastSynced(r *config.Repository) (*time.Time, error) {
-	repo, _, err := c.client.GetRepo(*r.Owner, r.Name)
+	repo, _, err := c.client.GetRepo(r.Owner, r.Name)
 	if err != nil {
 		return nil, err
 	}
 
 	if !repo.Mirror {
-		return nil, fmt.Errorf("Repository is not a mirror: %s/%s", *r.Owner, r.Name)
+		return nil, fmt.Errorf("Repository is not a mirror: %s/%s", r.Owner, r.Name)
 	}
 
 	return &repo.MirrorUpdated, nil
 }
 
 func (c *Controller) DeleteMirror(r *config.Repository) error {
-	_, err := c.client.DeleteRepo(*r.Owner, r.Name)
+	_, err := c.client.DeleteRepo(r.Owner, r.Name)
 
 	return err
 }

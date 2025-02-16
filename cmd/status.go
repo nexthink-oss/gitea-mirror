@@ -10,7 +10,7 @@ import (
 )
 
 var statusCmd = &cobra.Command{
-	Use:   "status",
+	Use:   "status [<repository> ...]",
 	Short: "Print the status of the mirrors",
 	RunE:  Status,
 }
@@ -23,7 +23,7 @@ func Status(cmd *cobra.Command, args []string) error {
 	var ctx = cmd.Context()
 
 	if config.Target.Token == "" {
-		if err := util.PromptForToken("Server API token", &config.Target.Token); err != nil {
+		if err := util.PromptForToken("Target API token", &config.Target.Token); err != nil {
 			return err
 		}
 	}
@@ -33,7 +33,7 @@ func Status(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	for _, repo := range config.Repositories {
+	for repo := range config.FilteredRepositories(args) {
 		synced, err := target.LastSynced(&repo)
 		if err != nil {
 			fmt.Println(repo.Failure(err))
