@@ -3,7 +3,7 @@ package github
 import (
 	"context"
 
-	"github.com/google/go-github/v68/github"
+	"github.com/google/go-github/v69/github"
 
 	"github.com/nexthink-oss/gitea-mirror/pkg/config"
 )
