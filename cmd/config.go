@@ -7,14 +7,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "Print the resolved configuration",
-	RunE:  ShowConfig,
-}
+func cmdConfig() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "config",
+		Short: "Print the resolved configuration",
+		RunE:  ShowConfig,
+	}
 
-func init() {
-	rootCmd.AddCommand(configCmd)
+	return cmd
 }
 
 func ShowConfig(cmd *cobra.Command, args []string) error {

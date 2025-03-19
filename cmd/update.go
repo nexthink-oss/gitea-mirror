@@ -9,14 +9,14 @@ import (
 	"github.com/nexthink-oss/gitea-mirror/pkg/util"
 )
 
-var updateCmd = &cobra.Command{
-	Use:   "update [<repository> ...]",
-	Short: "Update Gitea mirrors",
-	RunE:  UpdateMirrors,
-}
+func cmdUpdate() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update [<repository> ...]",
+		Short: "Update Gitea mirrors",
+		RunE:  UpdateMirrors,
+	}
 
-func init() {
-	rootCmd.AddCommand(updateCmd)
+	return cmd
 }
 
 func UpdateMirrors(cmd *cobra.Command, args []string) (err error) {

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -19,31 +18,34 @@ var (
 	date    string = "unknown"
 )
 
-var rootCmd = &cobra.Command{
-	Use:               "gitea-mirror",
-	Short:             "Manage Gitea mirrors",
-	SilenceUsage:      true,
-	PersistentPreRunE: LoadConfig,
-	Version:           fmt.Sprintf("%s-%s (built %s)", version, commit, date),
-}
+func New() *cobra.Command {
 
-func init() {
-	// cobra.OnInitialize(initViper)
+	cmd := &cobra.Command{
+		Use:               "gitea-mirror",
+		Short:             "Manage Gitea mirrors",
+		SilenceUsage:      true,
+		PersistentPreRunE: LoadConfig,
+		Version:           fmt.Sprintf("%s-%s (built %s)", version, commit, date),
+	}
 
-	pFlags := rootCmd.PersistentFlags()
+	pFlags := cmd.PersistentFlags()
 
 	pFlags.StringArrayP("config-path", "P", []string{"."}, "configuration file path")
 	pFlags.StringP("config-name", "C", "gitea-mirror", "configuration file name (without extension)")
 	pFlags.StringP("source.token", "S", "", "source API token")
 	pFlags.StringP("target.token", "T", "", "target API token")
 	pFlags.StringP("owner", "o", "", "default owner")
-}
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
-	}
+	cmd.AddCommand(
+		cmdConfig(),
+		cmdCreate(),
+		cmdDelete(),
+		cmdStatus(),
+		cmdSync(),
+		cmdUpdate(),
+	)
+
+	return cmd
 }
 
 func LoadConfig(cmd *cobra.Command, args []string) (err error) {

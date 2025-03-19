@@ -9,14 +9,14 @@ import (
 	"github.com/nexthink-oss/gitea-mirror/pkg/util"
 )
 
-var syncCmd = &cobra.Command{
-	Use:   "sync [<repository> ...]",
-	Short: "Sync Gitea mirrors",
-	RunE:  SyncMirrors,
-}
+func cmdSync() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "sync [<repository> ...]",
+		Short: "Sync Gitea mirrors",
+		RunE:  SyncMirrors,
+	}
 
-func init() {
-	rootCmd.AddCommand(syncCmd)
+	return cmd
 }
 
 func SyncMirrors(cmd *cobra.Command, args []string) (err error) {

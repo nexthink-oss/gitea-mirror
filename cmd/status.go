@@ -9,14 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var statusCmd = &cobra.Command{
-	Use:   "status [<repository> ...]",
-	Short: "Print the status of the mirrors",
-	RunE:  Status,
-}
+func cmdStatus() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "status [<repository> ...]",
+		Short: "Print the status of the mirrors",
+		RunE:  Status,
+	}
 
-func init() {
-	rootCmd.AddCommand(statusCmd)
+	return cmd
 }
 
 func Status(cmd *cobra.Command, args []string) error {

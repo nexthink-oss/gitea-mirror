@@ -11,14 +11,14 @@ import (
 	"github.com/nexthink-oss/gitea-mirror/pkg/util"
 )
 
-var createCmd = &cobra.Command{
-	Use:   "create [<repository> ...]",
-	Short: "Create Gitea mirrors",
-	RunE:  CreateMirrors,
-}
+func cmdCreate() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create [<repository> ...]",
+		Short: "Create Gitea mirrors",
+		RunE:  CreateMirrors,
+	}
 
-func init() {
-	rootCmd.AddCommand(createCmd)
+	return cmd
 }
 
 func CreateMirrors(cmd *cobra.Command, args []string) (err error) {

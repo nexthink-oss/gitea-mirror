@@ -9,14 +9,14 @@ import (
 	"github.com/nexthink-oss/gitea-mirror/pkg/util"
 )
 
-var deleteCmd = &cobra.Command{
-	Use:   "delete [<repository> ...]",
-	Short: "Delete Gitea mirrors",
-	RunE:  DeleteMirrors,
-}
+func cmdDelete() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "delete [<repository> ...]",
+		Short: "Delete Gitea mirrors",
+		RunE:  DeleteMirrors,
+	}
 
-func init() {
-	rootCmd.AddCommand(deleteCmd)
+	return cmd
 }
 
 func DeleteMirrors(cmd *cobra.Command, args []string) (err error) {
