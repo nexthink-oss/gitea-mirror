@@ -1,75 +1,151 @@
 # gitea-mirror
 
-A simple utility to manage collections of Gitea repository mirrors, supporting either Gitea or GitHub upstream source.
+[![Go Report Card](https://goreportcard.com/badge/github.com/nexthink-oss/gitea-mirror)](https://goreportcard.com/report/github.com/nexthink-oss/gitea-mirror)
+[![GoDoc](https://godoc.org/github.com/nexthink-oss/gitea-mirror?status.svg)](https://godoc.org/github.com/nexthink-oss/gitea-mirror)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-## Configuration
+A command-line tool to manage collections of Gitea repository mirrors, supporting either Gitea or GitHub upstream sources.
 
-Configuration via `gitea-mirror.yaml` file. An example configuration is given in the `gitea-mirror.yaml.example` file.
+## Features
 
-### `source`
+- Mirror repositories from GitHub or Gitea to your Gitea instance
+- Configure mirroring interval and repository visibility
+- Batch-manage multiple repository mirrors
+- Trigger manual synchronization
+- Check status of mirrors
 
-The upstream GitHub or Gitea instance to mirror from.
+## Installation
 
-`type`: set to `github` to use `github.com`.
+```bash
+go install github.com/nexthink-oss/gitea-mirror@latest
+```
 
-`url`: set to source from an upstream Gitea instance.
+Or download from [releases](https://github.com/nexthink-oss/gitea-mirror/releases).
 
-### `target`
+## Quick Start
 
-The downstream Gitea instance to mirror to.
+1. Create a configuration file:
 
-`url` is the URL of the Gitea instance.
+```bash
+# Create a basic configuration
+cat > gitea-mirror.yaml << EOF
+source:
+  type: github
 
-### `defaults`
+target:
+  url: https://gitea.example.com
 
-Default values for repositories.
+defaults:
+  owner: myorg
+  interval: 8h
+  public: false
 
-`owner`: the default owner of repositories to mirror (default: unset).
+repositories:
+  - name: repo1
+  - name: repo2
+    interval: 1h
+EOF
+```
 
-`interval`: default source sync interval (default: `0s` = disabled)
+2. Run the create command:
 
-`public`: (default: `false`).
+```bash
+# Set API tokens via environment variables
+export SOURCE_TOKEN=your_github_token
+export TARGET_TOKEN=your_gitea_token
 
-### `repositories`
-
-The list of repositories to mirror, including default overrides.
-
-`name`: (required) the name of the repository to mirror
-
-`owner`: (optional, if default set) the owner of the repository
-
-`public`: (optional) whether the mirrored repository should be public (default: `false`)
-
-`interval`: (optional) source sync interval
-
-## Authentication
-
-Required API tokens can be passed via `SOURCE_TOKEN` and `TARGET_TOKEN` environment variables, passed by argument, hardcoded via `token` key under `source` or `target`, or, if unset, will be interactively requested at runtime.
-
-## Usage
-
-### Create repository mirrors
-
-```shell
+# Create all mirrors defined in config
 gitea-mirror create
 ```
 
-### Synchronise repository mirrors
+## Documentation
 
-```shell
-gitea-mirror sync
+For detailed usage and configuration information, see the documentation:
+
+- [`gitea-mirror`](docs/gitea-mirror.md)
+- [`gitea-mirror config`](docs/config.md)
+- [`gitea-mirror create`](docs/create.md)
+- [`gitea-mirror update`](docs/update.md)
+- [`gitea-mirror delete`](docs/delete.md)
+- [`gitea-mirror status`](docs/status.md)
+- [`gitea-mirror sync`](docs/sync.md)
+
+## Configuration
+
+`gitea-mirror` uses a YAML or TOML configuration file. By default, it looks for `gitea-mirror.yaml` in the current directory.
+
+An example configuration file is provided in `gitea-mirror.example.yaml`.
+
+### Configuration Sections
+
+#### Source
+
+```yaml
+source:
+  type: github  # Use "github" for GitHub, "gitea" for Gitea (default)
+  url: https://gitea.upstream.example.com  # Required for Gitea source
+  token: token  # Optional, can be set via environment or command line
 ```
 
-### Check repository mirrors
+#### Target
 
-```shell
+```yaml
+target:
+  url: https://gitea.example.com  # Required
+  token: token  # Optional, can be set via environment or command line
+```
+
+#### Defaults
+
+```yaml
+defaults:
+  owner: myorg  # Default repository owner
+  interval: 8h  # Default sync interval (0s to disable)
+  public: false  # Default visibility setting
+```
+
+#### Repositories
+
+```yaml
+repositories:
+  - name: repo1  # Uses defaults
+  - name: repo2
+    owner: otherorg  # Override default owner
+    interval: 1h  # Override default interval
+    public: true  # Override default visibility
+```
+
+## Authentication
+
+API tokens can be provided in several ways (in order of precedence):
+
+1. Command line arguments (`-S/--source.token`, `-T/--target.token`)
+2. Environment variables (`SOURCE_TOKEN`, `TARGET_TOKEN`)
+3. Configuration file (`token` under `source` or `target`)
+4. Interactive prompt (if none of the above are provided)
+
+## Examples
+
+```bash
+# Create all mirrors
+gitea-mirror create
+
+# Synchronize specific repositories
+gitea-mirror sync repo1 repo2
+
+# Check status of mirrors
 gitea-mirror status
-```
 
-### Show configuration
+# Update mirror configuration
+gitea-mirror update
 
-```shell
+# Delete specific mirrors
+gitea-mirror delete repo1
+
+# Display current configuration
 gitea-mirror config
 ```
 
-Note: this *will* expose API tokens in the output.
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
