@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -12,12 +11,6 @@ import (
 
 var config *cfg.Config
 
-var (
-	version string = "snapshot"
-	commit  string = "unknown"
-	date    string = "unknown"
-)
-
 func New() *cobra.Command {
 
 	cmd := &cobra.Command{
@@ -25,7 +18,6 @@ func New() *cobra.Command {
 		Short:             "Manage Gitea mirrors",
 		SilenceUsage:      true,
 		PersistentPreRunE: LoadConfig,
-		Version:           fmt.Sprintf("%s-%s (built %s)", version, commit, date),
 	}
 
 	pFlags := cmd.PersistentFlags()
