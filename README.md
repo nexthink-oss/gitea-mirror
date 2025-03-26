@@ -72,7 +72,7 @@ For detailed usage and configuration information, see the documentation:
 
 ## Configuration
 
-`gitea-mirror` uses a YAML or TOML configuration file. By default, it looks for `gitea-mirror.yaml` in the current directory.
+`gitea-mirror` reads its configuration from one or more YAML or TOML configuration files. By default, it looks for `gitea-mirror.yaml` in the current directory. If multiple configuration files are specified, they are merged in order, with later files taking precedence.
 
 An example configuration file is provided in `gitea-mirror.example.yaml`.
 

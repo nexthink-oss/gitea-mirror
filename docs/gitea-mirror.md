@@ -25,13 +25,12 @@ gitea-mirror [command]
 ## Global Options
 
 ```
--C, --config-name string        configuration file name (without extension) (default "gitea-mirror")
--P, --config-path stringArray   configuration file path (default [.])
--o, --owner string              default owner
--S, --source.token string       source API token
--T, --target.token string       target API token
--h, --help                      help for gitea-mirror
-    --version                   version for gitea-mirror
+-c, --config-file file     configuration files (default [gitea-mirror.yaml])
+-o, --owner string         default owner
+-S, --source.token token   source API token
+-T, --target.token token   target API token
+-h, --help                 help for gitea-mirror
+    --version              version for gitea-mirror
 ```
 
 ## Environment Variables
@@ -39,8 +38,7 @@ gitea-mirror [command]
 Configuration can also be provided via environment variables:
 
 ```
-GM_CONFIG_NAME        - Configuration file name
-GM_CONFIG_PATH        - Configuration file path
+GM_CONFIG_FILE        - Configuration file name
 GM_OWNER              - Default repository owner
 GM_SOURCE_TOKEN       - Source API token
 GM_TARGET_TOKEN       - Target API token
@@ -48,7 +46,7 @@ GM_TARGET_TOKEN       - Target API token
 
 ## Configuration File
 
-`gitea-mirror` uses a YAML configuration file. By default, it looks for a file named `gitea-mirror.yaml` in the current directory. You can specify a different file with the `--config-name` and `--config-path` options.
+`gitea-mirror` uses a YAML configuration file. By default, it looks for a file named `gitea-mirror.yaml` in the current directory. You can specify a different files with the `--config-file` option.
 
 Example configuration:
 

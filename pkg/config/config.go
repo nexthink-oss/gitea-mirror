@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"iter"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -47,15 +48,22 @@ type Config struct {
 
 // LoadConfig loads the configuration using viper from the given file
 // and returns the configuration object.
-func LoadConfig(name string, paths ...string) (*Config, error) {
+func LoadConfig(names []string) (*Config, error) {
 	var config Config
 
-	for _, path := range paths {
-		viper.AddConfigPath(path)
-	}
-	viper.SetConfigName(name)
+	for _, name := range names {
 
-	viper.ReadInConfig()
+		if extension := filepath.Ext(name); extension != "" {
+			viper.SetConfigType(extension[1:])
+		} else {
+			viper.SetConfigType("yaml")
+		}
+		viper.SetConfigFile(name)
+
+		if err := viper.MergeInConfig(); err != nil {
+			return nil, err
+		}
+	}
 
 	if err := viper.Unmarshal(&config); err != nil {
 		return nil, err

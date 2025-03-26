@@ -22,10 +22,9 @@ func New() *cobra.Command {
 
 	pFlags := cmd.PersistentFlags()
 
-	pFlags.StringArrayP("config-path", "P", []string{"."}, "configuration file path")
-	pFlags.StringP("config-name", "C", "gitea-mirror", "configuration file name (without extension)")
-	pFlags.StringP("source.token", "S", "", "source API token")
-	pFlags.StringP("target.token", "T", "", "target API token")
+	pFlags.StringSliceP("config-file", "c", []string{"gitea-mirror.yaml"}, "configuration `file`s")
+	pFlags.StringP("source.token", "S", "", "source API `token`")
+	pFlags.StringP("target.token", "T", "", "target API `token`")
 	pFlags.StringP("owner", "o", "", "default owner")
 
 	cmd.AddCommand(
@@ -50,8 +49,7 @@ func LoadConfig(cmd *cobra.Command, args []string) (err error) {
 	viper.BindEnv("target.token", "TARGET_TOKEN")
 
 	config, err = cfg.LoadConfig(
-		viper.GetString("config-name"),
-		viper.GetStringSlice("config-path")...,
+		viper.GetStringSlice("config-file"),
 	)
 	if err != nil {
 		return err

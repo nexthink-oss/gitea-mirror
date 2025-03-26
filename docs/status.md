@@ -36,9 +36,8 @@ gitea-mirror status owner/repo
 ## Options inherited from parent commands
 
 ```
--C, --config-name string        configuration file name (without extension) (default "gitea-mirror")
--P, --config-path stringArray   configuration file path (default [.])
--o, --owner string              default owner
--S, --source.token string       source API token
--T, --target.token string       target API token
+-c, --config-file file     configuration files (default [gitea-mirror.yaml])
+-o, --owner string         default owner
+-S, --source.token token   source API token
+-T, --target.token token   target API token
 ```
