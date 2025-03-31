@@ -83,9 +83,14 @@ An example configuration file is provided in `gitea-mirror.example.yaml`.
 ```yaml
 source:
   type: github  # Use "github" for GitHub, "gitea" for Gitea (default)
-  url: https://gitea.upstream.example.com  # Required for Gitea source
+  url: http://gitea.upstream.example.com  # Required for Gitea source
+  alt-url: https://gitea.example.com  # Optional, defaults to source.url
   token: token  # Optional, can be set via environment or command line
 ```
+
+- `type`: the type of source instance, either `github` or `gitea`.
+- `url`: the address of the source Gitea instance from the context within which `gitea-mirror` is run.
+- `mirror-url`: the address of the source Gitea instance from the context of the the target Gitea instance, if not the mirror shouldn't use the source instance's configured `server.DOMAIN`.
 
 #### Target
 

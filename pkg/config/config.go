@@ -13,15 +13,23 @@ import (
 
 // Source may be either GitHub or Gitea
 type Source struct {
-	Type  string `mapstructure:"type" yaml:"type,omitempty" default:"gitea"`
-	Url   string `mapstructure:"url" yaml:"url,omitempty"`
-	Token string `mapstructure:"token" yaml:"-"`
+	Type      string `mapstructure:"type" yaml:"type,omitempty" default:"gitea"`
+	Url       string `mapstructure:"url" yaml:"url,omitempty"`
+	RemoteUrl string `mapstructure:"remote-url" yaml:"remote-url,omitempty"`
+	Token     string `mapstructure:"token" yaml:"-"`
 }
 
 // Target is always a Gitea instance
 type Target struct {
 	Url   string `mapstructure:"url" yaml:"url" default:"http://localhost:3000"`
 	Token string `mapstructure:"token" yaml:"-"`
+}
+
+type Forge interface {
+	GetType() string
+	GetUrl() string
+	GetRemoteUrl() string
+	GetToken() string
 }
 
 type Defaults struct {
@@ -88,22 +96,54 @@ func LoadConfig(names []string) (*Config, error) {
 	return &config, nil
 }
 
-func (r Repository) String() string {
+func (s *Source) GetType() string {
+	return s.Type
+}
+
+func (s *Source) GetUrl() string {
+	return s.Url
+}
+
+func (s *Source) GetRemoteUrl() string {
+	return s.RemoteUrl
+}
+
+func (s *Source) GetToken() string {
+	return s.Token
+}
+
+func (t *Target) GetType() string {
+	return "gitea"
+}
+
+func (t *Target) GetUrl() string {
+	return t.Url
+}
+
+func (t *Target) GetRemoteUrl() string {
+	return ""
+}
+
+func (t *Target) GetToken() string {
+	return t.Token
+}
+
+func (r *Repository) String() string {
 	return fmt.Sprintf("%s/%s", r.Owner, r.Name)
 }
 
-func (r Repository) Success(message ...string) string {
+func (r *Repository) Success(message ...string) string {
 	if len(message) > 0 {
 		return fmt.Sprintf("✅ %s/%s: %s", r.Owner, r.Name, strings.Join(message, " "))
 	}
 	return fmt.Sprintf("✅ %s/%s", r.Owner, r.Name)
 }
 
-func (r Repository) Failure(err error) string {
+func (r *Repository) Failure(err error) string {
 	return fmt.Sprintf("❌ %s/%s: %s", r.Owner, r.Name, err.Error())
 }
 
-func (c Config) RepositorySetFromArgs(args []string) RepositorySet {
+func (c *Config) RepositorySetFromArgs(args []string) RepositorySet {
 	sets := make(RepositorySet)
 	for _, arg := range args {
 		repo, err := c.ParseRepositorySpec(arg)
@@ -115,7 +155,7 @@ func (c Config) RepositorySetFromArgs(args []string) RepositorySet {
 	return sets
 }
 
-func (c Config) ParseRepositorySpec(spec string) (repo string, err error) {
+func (c *Config) ParseRepositorySpec(spec string) (repo string, err error) {
 	split := strings.SplitN(spec, "/", 2)
 	switch len(split) {
 	case 1:
@@ -128,7 +168,7 @@ func (c Config) ParseRepositorySpec(spec string) (repo string, err error) {
 	return repo, err
 }
 
-func (c Config) FilteredRepositories(args []string) iter.Seq[Repository] {
+func (c *Config) FilteredRepositories(args []string) iter.Seq[Repository] {
 	filter := c.RepositorySetFromArgs(args)
 	return func(yield func(Repository) bool) {
 		for _, repo := range c.Repositories {
@@ -139,11 +179,11 @@ func (c Config) FilteredRepositories(args []string) iter.Seq[Repository] {
 	}
 }
 
-func (r RepositorySet) EmptyOrContains(repo Repository) bool {
-	if len(r) == 0 {
+func (r *RepositorySet) EmptyOrContains(repo Repository) bool {
+	if r == nil || len(*r) == 0 {
 		return true
 	}
 
-	_, ok := r[repo.String()]
+	_, ok := (*r)[repo.String()]
 	return ok
 }

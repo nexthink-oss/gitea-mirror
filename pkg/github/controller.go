@@ -11,16 +11,16 @@ import (
 type Controller struct {
 	ctx    context.Context
 	client *github.Client
-	token  string
+	forge  config.Forge
 }
 
-func NewController(ctx context.Context, token string) *Controller {
-	client := github.NewClient(nil).WithAuthToken(token)
+func NewController(ctx context.Context, forge config.Forge) *Controller {
+	client := github.NewClient(nil).WithAuthToken(forge.GetToken())
 
 	return &Controller{
 		ctx:    ctx,
 		client: client,
-		token:  token,
+		forge:  forge,
 	}
 }
 
@@ -29,7 +29,7 @@ func (c Controller) GetType() string {
 }
 
 func (c Controller) GetToken() string {
-	return c.token
+	return c.forge.GetToken()
 }
 
 func (c Controller) IsPrivate(r *config.Repository) (bool, error) {
@@ -43,6 +43,9 @@ func (c Controller) IsPrivate(r *config.Repository) (bool, error) {
 
 func (c Controller) GetCloneURL(r *config.Repository) (string, error) {
 	repo, _, err := c.client.Repositories.Get(c.ctx, r.Owner, r.Name)
-
-	return *repo.CloneURL, err
+	if err != nil {
+		return "", err
+	} else {
+		return *repo.CloneURL, nil
+	}
 }

@@ -28,7 +28,7 @@ func Status(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	target, err := gitea.NewController(ctx, config.Target.Url, config.Target.Token)
+	target, err := gitea.NewController(ctx, &config.Target)
 	if err != nil {
 		return err
 	}

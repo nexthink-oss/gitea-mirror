@@ -39,15 +39,15 @@ func CreateMirrors(cmd *cobra.Command, args []string) (err error) {
 
 	switch config.Source.Type {
 	case "github":
-		source = github.NewController(ctx, config.Source.Token)
+		source = github.NewController(ctx, &config.Source)
 	case "gitea":
-		source, err = gitea.NewController(ctx, config.Source.Url, config.Source.Token)
+		source, err = gitea.NewController(ctx, &config.Source)
 		if err != nil {
 			return fmt.Errorf("NewController(%s): %w", config.Source.Url, err)
 		}
 	}
 
-	target, err := gitea.NewController(ctx, config.Target.Url, config.Target.Token)
+	target, err := gitea.NewController(ctx, &config.Target)
 	if err != nil {
 		return fmt.Errorf("NewController(%s): %w", config.Target.Url, err)
 	}

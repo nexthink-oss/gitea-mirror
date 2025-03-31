@@ -28,7 +28,7 @@ func SyncMirrors(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	target, err := gitea.NewController(ctx, config.Target.Url, config.Target.Token)
+	target, err := gitea.NewController(ctx, &config.Target)
 	if err != nil {
 		return err
 	}

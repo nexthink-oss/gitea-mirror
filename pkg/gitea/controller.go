@@ -2,6 +2,7 @@ package gitea
 
 import (
 	"context"
+	"fmt"
 
 	"code.gitea.io/sdk/gitea"
 
@@ -11,11 +12,11 @@ import (
 type Controller struct {
 	ctx    context.Context
 	client *gitea.Client
-	token  string
+	forge  config.Forge
 }
 
-func NewController(ctx context.Context, url, token string) (*Controller, error) {
-	client, err := gitea.NewClient(url, gitea.SetToken(token))
+func NewController(ctx context.Context, forge config.Forge) (*Controller, error) {
+	client, err := gitea.NewClient(forge.GetUrl(), gitea.SetToken(forge.GetToken()))
 	if err != nil {
 		return nil, err
 	}
@@ -23,19 +24,29 @@ func NewController(ctx context.Context, url, token string) (*Controller, error) 
 	return &Controller{
 		ctx:    ctx,
 		client: client,
-		token:  token,
+		forge:  forge,
 	}, nil
 }
 
-func (g Controller) GetType() string {
+func (g *Controller) GetType() string {
 	return "gitea"
 }
 
-func (g Controller) GetToken() string {
-	return g.token
+func (g *Controller) GetToken() string {
+	return g.forge.GetToken()
 }
 
-func (c Controller) GetCloneURL(r *config.Repository) (string, error) {
+func (c *Controller) GetCloneURL(r *config.Repository) (string, error) {
+	if c.forge != nil {
+		if remoteUrl := c.forge.GetRemoteUrl(); remoteUrl != "" {
+			return fmt.Sprintf("%s/%s/%s.git", remoteUrl, r.Owner, r.Name), nil
+		}
+	}
+
 	repo, _, err := c.client.GetRepo(r.Owner, r.Name)
-	return repo.CloneURL, err
+	if err != nil {
+		return "", err
+	}
+
+	return repo.CloneURL, nil
 }
