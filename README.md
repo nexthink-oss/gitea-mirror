@@ -4,7 +4,7 @@
 [![GoDoc](https://godoc.org/github.com/nexthink-oss/gitea-mirror?status.svg)](https://godoc.org/github.com/nexthink-oss/gitea-mirror)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-A command-line tool to manage collections of Gitea repository mirrors, supporting either Gitea or GitHub upstream sources.
+A CLI to manage collections of Gitea repository mirrors, supporting either Gitea or GitHub upstream sources.
 
 ## Features
 
