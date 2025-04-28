@@ -1,0 +1,54 @@
+version: 2
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: .
+    binary: gitea-mirror
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - >-
+        -s -w
+        -X main.version={{.Version}}
+        -X main.commit={{.ShortCommit}}
+        -X main.date={{.Date}}
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+archives:
+  - formats:
+      - zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+snapshot:
+  version_template: "{{ .Tag }}-next"
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
+  algorithm: sha256
+release:
+  draft: false
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+brews:
+  - repository:
+      owner: isometry
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    description: Manage Gitea mirror lifecycle
+    homepage: https://just.breathe.io/project/gitea-mirror/
+    test: |
+      system "#{bin}/gitea-mirror --help"
+    install: |
+      bin.install "gitea-mirror"

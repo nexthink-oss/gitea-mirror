@@ -30,12 +30,17 @@ func (c *Controller) CreateMirror(source server.Server, r *config.Repository) (*
 		return nil, err
 	}
 
+	var authToken string
+	if !*r.PublicSource {
+		authToken = source.GetToken()
+	}
+
 	options := gitea.MigrateRepoOption{
 		RepoOwner:      r.Owner,
 		RepoName:       r.Name,
-		Private:        !*r.Public,
+		Private:        !*r.PublicTarget,
 		CloneAddr:      cloneURL,
-		AuthToken:      source.GetToken(),
+		AuthToken:      authToken,
 		Mirror:         true,
 		MirrorInterval: r.Interval.String(),
 	}
@@ -46,7 +51,7 @@ func (c *Controller) CreateMirror(source server.Server, r *config.Repository) (*
 }
 
 func (c *Controller) UpdateMirror(r *config.Repository) (*gitea.Repository, error) {
-	private := !*r.Public
+	private := !*r.PublicTarget
 	interval := r.Interval.String()
 	options := gitea.EditRepoOption{
 		Private:        &private,

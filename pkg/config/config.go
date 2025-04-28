@@ -33,16 +33,18 @@ type Forge interface {
 }
 
 type Defaults struct {
-	Owner    string        `mapstructure:"owner"`
-	Interval time.Duration `mapstructure:"interval"`
-	Public   bool          `mapstructure:"public"`
+	Owner        string        `mapstructure:"owner"`
+	Interval     time.Duration `mapstructure:"interval"`
+	PublicSource bool          `mapstructure:"public-source"`
+	PublicTarget bool          `mapstructure:"public-target"`
 }
 
 type Repository struct {
-	Owner    string         `mapstructure:"owner" yaml:"owner,omitempty"`
-	Name     string         `mapstructure:"name"`
-	Interval *time.Duration `mapstructure:"interval" yaml:"interval,omitempty"`
-	Public   *bool          `mapstructure:"public" yaml:"public,omitempty"`
+	Owner        string         `mapstructure:"owner" yaml:"owner,omitempty"`
+	Name         string         `mapstructure:"name"`
+	Interval     *time.Duration `mapstructure:"interval" yaml:"interval,omitempty"`
+	PublicSource *bool          `mapstructure:"public-source" yaml:"public-source,omitempty"`
+	PublicTarget *bool          `mapstructure:"public-target" yaml:"public-target,omitempty"`
 }
 
 type RepositorySet map[string]struct{}
@@ -88,8 +90,11 @@ func LoadConfig(names []string) (*Config, error) {
 		if r.Interval == nil {
 			config.Repositories[i].Interval = &config.Defaults.Interval
 		}
-		if r.Public == nil {
-			config.Repositories[i].Public = &config.Defaults.Public
+		if r.PublicSource == nil {
+			config.Repositories[i].PublicSource = &config.Defaults.PublicSource
+		}
+		if r.PublicTarget == nil {
+			config.Repositories[i].PublicTarget = &config.Defaults.PublicTarget
 		}
 	}
 
