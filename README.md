@@ -38,7 +38,8 @@ target:
 defaults:
   owner: myorg
   interval: 8h
-  public: false
+  public-source: false
+  public-target: false
 
 repositories:
   - name: repo1
@@ -65,6 +66,7 @@ For detailed usage and configuration information, see the documentation:
 - [`gitea-mirror`](docs/gitea-mirror.md)
 - [`gitea-mirror config`](docs/config.md)
 - [`gitea-mirror create`](docs/create.md)
+- [`gitea-mirror recreate`](docs/recreate.md)
 - [`gitea-mirror update`](docs/update.md)
 - [`gitea-mirror delete`](docs/delete.md)
 - [`gitea-mirror status`](docs/status.md)
@@ -106,7 +108,8 @@ target:
 defaults:
   owner: myorg  # Default repository owner
   interval: 8h  # Default sync interval (0s to disable)
-  public: false  # Default visibility setting
+  public-source: false  # Visibility of source repositories
+  public-target: false  # Visibility of target repositories
 ```
 
 #### Repositories
@@ -117,7 +120,7 @@ repositories:
   - name: repo2
     owner: otherorg  # Override default owner
     interval: 1h  # Override default interval
-    public: true  # Override default visibility
+    public-target: true  # Override default visibility
 ```
 
 ## Authentication
@@ -128,6 +131,8 @@ API tokens can be provided in several ways (in order of precedence):
 2. Environment variables (`SOURCE_TOKEN`, `TARGET_TOKEN`)
 3. Configuration file (`token` under `source` or `target`)
 4. Interactive prompt (if none of the above are provided)
+
+Security warning: if `public-source: false` is set, then the target Gitea instance will embed the supplied source token within its local repository configuration in order to support synchronization.
 
 ## Examples
 

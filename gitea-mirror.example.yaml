@@ -8,11 +8,11 @@ target:
 defaults:
   owner: orgname
   interval: 0s # no auto-sync
-  public: false
+  public-target: false
 
 repositories:
   - name: infrastructure.components
   - name: infrastructure.configurations
   - name: sdlc.gitops-catalog
-    public: true # override the default visibility
+    public-target: true # override the default visibility
     interval: 1h # override the default interval
