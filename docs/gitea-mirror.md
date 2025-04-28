@@ -16,6 +16,7 @@ gitea-mirror [command]
 
 - [`gitea-mirror config`](config.md): Print the resolved configuration
 - [`gitea-mirror create`](create.md): Create Gitea mirrors
+- [`gitea-mirror recreate`](recreate.md): Re-create Gitea mirrors following source-token update
 - [`gitea-mirror update`](update.md): Update Gitea mirrors
 - [`gitea-mirror delete`](delete.md): Delete Gitea mirrors
 - [`gitea-mirror status`](status.md): Print the status of the mirrors
@@ -60,12 +61,13 @@ target:
 defaults:
   owner: myorg
   interval: 1h
-  public: false
+  public-source: false
+  public-target: false
 
 repositories:
   - name: repo1
   - name: repo2
     owner: otherorg
     interval: 30m
-    public: true
+    public-target: true
 ```
