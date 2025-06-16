@@ -23,7 +23,7 @@ gitea-mirror delete
 # Delete specific mirrors
 gitea-mirror delete repo1 repo2
 
-# Delete a mirror with specific owner
+# Delete a mirror with non-default owner
 gitea-mirror delete owner/repo
 ```
 

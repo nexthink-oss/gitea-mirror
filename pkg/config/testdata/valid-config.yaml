@@ -1,0 +1,17 @@
+source:
+  type: gitea
+  url: https://source-gitea.example.com
+  remote-url: https://remote-gitea.example.com
+
+target:
+  url: https://target-gitea.example.com
+
+defaults:
+  owner: test-org
+  interval: 1h
+  public-target: true
+
+repositories:
+  - name: repo1
+  - name: repo2
+    owner: custom-org

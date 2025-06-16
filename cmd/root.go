@@ -26,6 +26,7 @@ func New() *cobra.Command {
 	pFlags.StringP("source.token", "S", "", "source API `token`")
 	pFlags.StringP("target.token", "T", "", "target API `token`")
 	pFlags.StringP("owner", "o", "", "default owner")
+	pFlags.StringSliceP("labels", "l", nil, "filter repositories by label")
 
 	cmd.AddCommand(
 		cmdConfig(),
@@ -54,6 +55,10 @@ func LoadConfig(cmd *cobra.Command, args []string) (err error) {
 	)
 	if err != nil {
 		return err
+	}
+
+	if labels := viper.GetStringSlice("labels"); len(labels) > 0 {
+		config.Repositories = config.LabelledRepositories(labels)
 	}
 
 	return err
