@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"iter"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -37,6 +38,7 @@ type Defaults struct {
 	Interval     time.Duration `mapstructure:"interval"`
 	PublicSource bool          `mapstructure:"public-source"`
 	PublicTarget bool          `mapstructure:"public-target"`
+	Labels       []string      `mapstructure:"labels"`
 }
 
 type Repository struct {
@@ -45,6 +47,7 @@ type Repository struct {
 	Interval     *time.Duration `mapstructure:"interval" yaml:"interval,omitempty"`
 	PublicSource *bool          `mapstructure:"public-source" yaml:"public-source,omitempty"`
 	PublicTarget *bool          `mapstructure:"public-target" yaml:"public-target,omitempty"`
+	Labels       []string       `mapstructure:"labels"`
 }
 
 type RepositorySet map[string]struct{}
@@ -95,6 +98,11 @@ func LoadConfig(names []string) (*Config, error) {
 		}
 		if r.PublicTarget == nil {
 			config.Repositories[i].PublicTarget = &config.Defaults.PublicTarget
+		}
+		// If Labels field was not provided for the repository in the config, inherit from defaults.
+		// If 'labels: []' was explicitly provided, r.Labels will be an empty non-nil slice, and we should not overwrite it.
+		if r.Labels == nil {
+			config.Repositories[i].Labels = config.Defaults.Labels
 		}
 	}
 
@@ -171,6 +179,21 @@ func (c *Config) ParseRepositorySpec(spec string) (repo string, err error) {
 		err = fmt.Errorf("invalid repository spec")
 	}
 	return repo, err
+}
+
+func (c *Config) LabelledRepositories(labels []string) []Repository {
+	var repos []Repository
+	for _, repo := range c.Repositories {
+		if len(labels) == 0 || len(repo.Labels) > 0 {
+			for _, label := range labels {
+				if slices.Contains(repo.Labels, label) {
+					repos = append(repos, repo)
+					break
+				}
+			}
+		}
+	}
+	return repos
 }
 
 func (c *Config) FilteredRepositories(args []string) iter.Seq[Repository] {

@@ -27,6 +27,7 @@ gitea-mirror [command]
 
 ```
 -c, --config-file file     configuration files (default [gitea-mirror.yaml])
+-l, --labels stringSlice   filter repositories by label
 -o, --owner string         default owner
 -S, --source.token token   source API token
 -T, --target.token token   target API token
@@ -41,6 +42,7 @@ Configuration can also be provided via environment variables:
 ```
 GM_CONFIG_FILE        - Configuration file name
 GM_OWNER              - Default repository owner
+GM_LABELS             - Comma-separated list of labels to filter repositories
 GM_SOURCE_TOKEN       - Source API token
 GM_TARGET_TOKEN       - Target API token
 ```
@@ -63,11 +65,16 @@ defaults:
   interval: 1h
   public-source: false
   public-target: false
+  labels: ["default-label", "team-a"]
 
 repositories:
   - name: repo1
+    # Inherits labels from defaults: ["default-label", "team-a"]
   - name: repo2
     owner: otherorg
     interval: 30m
     public-target: true
+    labels: ["critical", "team-b"]
+  - name: repo3
+    labels: [] # Explicitly no labels, does not inherit default
 ```

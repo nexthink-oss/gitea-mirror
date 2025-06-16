@@ -1,0 +1,5 @@
+repositories:
+  - name: repo1
+  - name: repo2
+  - name: repo3
+    owner: different-org

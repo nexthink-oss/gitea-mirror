@@ -1,0 +1,10 @@
+source:
+  type: gitea
+  url: https://source-gitea.example.com
+
+target:
+  url: https://target-gitea.example.com
+
+defaults:
+  owner: test-org
+  interval: 1h

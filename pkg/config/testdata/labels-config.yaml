@@ -1,0 +1,28 @@
+source:
+  type: gitea
+  url: https://source-gitea.example.com
+
+target:
+  url: https://target-gitea.example.com
+
+defaults:
+  owner: default-org
+  interval: 1h
+  public-target: false
+  labels: ["default-label", "team-infra"]
+
+repositories:
+  - name: repo-with-default-labels
+    # Inherits labels: ["default-label", "team-infra"]
+
+  - name: repo-with-own-labels
+    owner: custom-org
+    labels: ["app-prod", "team-product"]
+
+  - name: repo-with-empty-labels
+    labels: [] # Explicitly no labels, should not inherit default
+
+  - name: repo-mixed-labels
+    labels: ["default-label", "app-staging"]
+
+  - name: repo-no-label-field # Should also inherit default labels

@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/goccy/go-yaml"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 )
 
 func cmdConfig() *cobra.Command {
@@ -18,7 +18,7 @@ func cmdConfig() *cobra.Command {
 }
 
 func ShowConfig(cmd *cobra.Command, args []string) error {
-	out, err := yaml.Marshal(config)
+	out, err := yaml.MarshalWithOptions(config, yaml.IndentSequence(true))
 	if err != nil {
 		return err
 	}
