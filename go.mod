@@ -3,7 +3,7 @@ module github.com/nexthink-oss/gitea-mirror
 go 1.24.0
 
 require (
-	code.gitea.io/sdk/gitea v0.22.0
+	code.gitea.io/sdk/gitea v0.22.1
 	github.com/creasty/defaults v1.8.0
 	github.com/goccy/go-yaml v1.18.0
 	github.com/google/go-github/v72 v72.0.0
