@@ -9,6 +9,7 @@ A CLI to manage collections of Gitea repository mirrors, supporting either Gitea
 ## Features
 
 - Mirror repositories from GitHub or Gitea to your Gitea instance
+- Automatic just-in-time creation of missing Gitea organizations
 - Configure mirroring interval and repository visibility
 - Batch-manage multiple repository mirrors
 - Filter actions by repository labels

@@ -10,9 +10,10 @@ import (
 )
 
 type Controller struct {
-	ctx    context.Context
-	client *gitea.Client
-	forge  config.Forge
+	ctx      context.Context
+	client   *gitea.Client
+	forge    config.Forge
+	orgCache map[string]*gitea.Organization
 }
 
 func NewController(ctx context.Context, forge config.Forge) (*Controller, error) {
@@ -22,9 +23,10 @@ func NewController(ctx context.Context, forge config.Forge) (*Controller, error)
 	}
 
 	return &Controller{
-		ctx:    ctx,
-		client: client,
-		forge:  forge,
+		ctx:      ctx,
+		client:   client,
+		forge:    forge,
+		orgCache: make(map[string]*gitea.Organization),
 	}, nil
 }
 
