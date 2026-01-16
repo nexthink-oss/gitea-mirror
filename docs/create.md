@@ -17,6 +17,8 @@ The `create` command creates mirrors in the target Gitea instance for repositori
 3. Create a mirror in the target Gitea server
 4. Set up the mirroring configuration
 
+**Note**: Missing target organizations are automatically created as needed with the visibility of the first repository mirrored to that organization.
+
 If no specific repositories are provided as arguments, all repositories defined in the configuration file will be processed.
 
 ## Examples

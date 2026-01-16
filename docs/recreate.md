@@ -17,6 +17,8 @@ The process:
 1. Deletes the existing mirror repository from the target Gitea instance
 2. Creates a new mirror with the same configuration but with updated credentials
 
+**Note**: Missing target organizations are automatically created as needed with the visibility of the first repository mirrored to that organization.
+
 If no specific repositories are provided as arguments, all repositories defined in the configuration file will be recreated.
 
 ## Examples
