@@ -16,7 +16,7 @@ gitea-mirror [command]
 
 - [`gitea-mirror config`](config.md): Print the resolved configuration
 - [`gitea-mirror create`](create.md): Create Gitea mirrors
-- [`gitea-mirror recreate`](recreate.md): Re-create Gitea mirrors following source-token update
+- [`gitea-mirror recreate`](recreate.md): Re-create Gitea mirrors (source-token rotation on Gitea < 1.27)
 - [`gitea-mirror update`](update.md): Update Gitea mirrors
 - [`gitea-mirror delete`](delete.md): Delete Gitea mirrors
 - [`gitea-mirror status`](status.md): Print the status of the mirrors

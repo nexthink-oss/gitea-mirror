@@ -28,13 +28,13 @@ func Status(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	target, err := gitea.NewController(ctx, &config.Target)
+	target, err := gitea.NewController(&config.Target)
 	if err != nil {
 		return err
 	}
 
 	for repo := range config.FilteredRepositories(args) {
-		synced, err := target.LastSynced(&repo)
+		synced, err := target.LastSynced(ctx, &repo)
 		if err != nil {
 			fmt.Println(repo.Failure(err))
 		} else {

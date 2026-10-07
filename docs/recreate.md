@@ -10,7 +10,7 @@ gitea-mirror recreate [<repository> ...] [flags]
 
 ## Description
 
-The `recreate` command deletes and then recreates mirrors in the target Gitea instance. This is particularly useful when you need to reset the sync token associated with a mirror, as the Gitea SDK doesn't support updating the token directly.
+The `recreate` command deletes and then recreates mirrors in the target Gitea instance. On Gitea >= 1.27, [`update`](update.md) rotates the source token in place; `recreate` is only needed to reset the sync token associated with a mirror on older Gitea versions.
 
 The process:
 

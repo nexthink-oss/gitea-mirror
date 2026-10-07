@@ -148,7 +148,7 @@ gitea-mirror sync repo1 repo2
 # Check status of mirrors
 gitea-mirror status
 
-# Update mirror configuration
+# Update mirror configuration (and rotate source tokens on Gitea >= 1.27)
 gitea-mirror update
 
 # Delete specific mirrors

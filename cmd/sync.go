@@ -28,13 +28,13 @@ func SyncMirrors(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	target, err := gitea.NewController(ctx, &config.Target)
+	target, err := gitea.NewController(&config.Target)
 	if err != nil {
 		return err
 	}
 
 	for repo := range config.FilteredRepositories(args) {
-		if err := target.SyncMirror(&repo); err != nil {
+		if err := target.SyncMirror(ctx, &repo); err != nil {
 			fmt.Println(repo.Failure(err))
 		} else {
 			fmt.Println(repo.Success())
