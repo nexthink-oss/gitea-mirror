@@ -8,6 +8,11 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -26,4 +31,30 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+
+      - name: Set up gobottle
+        uses: isometry/gobottle-setup@v1
+
+      - name: Publish bottles
+        run: gobottle release --source local
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOBOTTLE_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+
+      - name: Upload bottles manifest
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: bottles-manifest-${{ github.ref_name }}
+          path: bottles/bottles.json
+          if-no-files-found: ignore
+
+      - name: Attest provenance
+        uses: actions/attest-build-provenance@v4
+        if: ${{ !cancelled() && hashFiles('bottles/*.tar.gz') != '' }}
+        with:
+          subject-path: |
+            dist/*.zip
+            dist/*_SHA256SUMS
+            dist/*/gitea-mirror*
+            bottles/*.tar.gz

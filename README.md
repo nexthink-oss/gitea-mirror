@@ -19,6 +19,13 @@ A CLI to manage collections of Gitea repository mirrors, supporting either Gitea
 ## Installation
 
 ```bash
+brew trust isometry/tap
+brew install isometry/tap/gitea-mirror
+```
+
+Or with Go:
+
+```bash
 go install github.com/nexthink-oss/gitea-mirror@latest
 ```
 

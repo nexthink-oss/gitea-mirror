@@ -40,15 +40,3 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-brews:
-  - repository:
-      owner: isometry
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    directory: Formula
-    description: Manage Gitea mirror lifecycle
-    homepage: https://just.breathe.io/project/gitea-mirror/
-    test: |
-      system "#{bin}/gitea-mirror --help"
-    install: |
-      bin.install "gitea-mirror"
