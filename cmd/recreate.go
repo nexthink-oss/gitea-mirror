@@ -22,10 +22,8 @@ func cmdRecreate() *cobra.Command {
 func RecreateMirrors(cmd *cobra.Command, args []string) (err error) {
 	var ctx = cmd.Context()
 
-	if config.Source.Token == "" {
-		if err := util.PromptForToken("Source API token", &config.Source.Token); err != nil {
-			return fmt.Errorf("Source API token: %w", err)
-		}
+	if err := promptSourceToken(args); err != nil {
+		return err
 	}
 
 	if config.Target.Token == "" {

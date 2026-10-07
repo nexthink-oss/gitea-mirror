@@ -14,7 +14,10 @@ type Controller struct {
 }
 
 func NewController(forge config.Forge) *Controller {
-	client := github.NewClient(nil).WithAuthToken(forge.GetToken())
+	client := github.NewClient(nil)
+	if token := forge.GetToken(); token != "" {
+		client = client.WithAuthToken(token)
+	}
 
 	return &Controller{
 		client: client,
