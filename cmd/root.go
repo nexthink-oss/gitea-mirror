@@ -46,7 +46,23 @@ func New() *cobra.Command {
 	return cmd
 }
 
+// needsConfig reports whether cmd requires a loaded configuration; shell
+// completion and help are config-independent.
+func needsConfig(cmd *cobra.Command) bool {
+	for c := cmd; c != nil; c = c.Parent() {
+		switch c.Name() {
+		case "completion", "help", cobra.ShellCompRequestCmd, cobra.ShellCompNoDescRequestCmd:
+			return false
+		}
+	}
+	return true
+}
+
 func LoadConfig(cmd *cobra.Command, args []string) (err error) {
+	if !needsConfig(cmd) {
+		return nil
+	}
+
 	viper.BindPFlags(cmd.Flags())
 	viper.SetEnvPrefix("GM")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
