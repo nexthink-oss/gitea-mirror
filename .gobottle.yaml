@@ -1,0 +1,23 @@
+formula:
+  name: gitea-mirror
+  description: Manage Gitea mirror lifecycle
+  homepage: https://just.breathe.io/project/gitea-mirror/
+  license: BSD-3-Clause
+  install:
+    completions: true
+  test:
+    raw: |
+      system "#{bin}/gitea-mirror --help"
+
+source:
+  type: go
+  build:
+    packages: ["."]
+    ldflags: >-
+      -s -w
+      -X main.version={{.Version}}
+      -X main.commit={{.ShortCommit}}
+      -X main.date={{.Date}}
+
+tap:
+  owner: isometry
