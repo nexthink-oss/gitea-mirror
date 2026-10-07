@@ -6,8 +6,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/nexthink-oss/gitea-mirror/pkg/gitea"
-	"github.com/nexthink-oss/gitea-mirror/pkg/github"
-	"github.com/nexthink-oss/gitea-mirror/pkg/server"
 	"github.com/nexthink-oss/gitea-mirror/pkg/util"
 )
 
@@ -23,7 +21,6 @@ func cmdRecreate() *cobra.Command {
 
 func RecreateMirrors(cmd *cobra.Command, args []string) (err error) {
 	var ctx = cmd.Context()
-	var source server.Server
 
 	if config.Source.Token == "" {
 		if err := util.PromptForToken("Source API token", &config.Source.Token); err != nil {
@@ -37,27 +34,22 @@ func RecreateMirrors(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	switch config.Source.Type {
-	case "github":
-		source = github.NewController(ctx, &config.Source)
-	case "gitea":
-		source, err = gitea.NewController(ctx, &config.Source)
-		if err != nil {
-			return fmt.Errorf("NewController(%s): %w", config.Source.Url, err)
-		}
+	source, err := newSource(config)
+	if err != nil {
+		return err
 	}
 
-	target, err := gitea.NewController(ctx, &config.Target)
+	target, err := gitea.NewController(&config.Target)
 	if err != nil {
 		return fmt.Errorf("NewController(%s): %w", config.Target.Url, err)
 	}
 
 	for repo := range config.FilteredRepositories(args) {
-		if err = target.DeleteMirror(&repo); err != nil {
+		if err = target.DeleteMirror(ctx, &repo); err != nil {
 			fmt.Println(repo.Failure(fmt.Errorf("deleting: %w", err)))
 			continue
 		}
-		if _, err = target.CreateMirror(source, &repo); err != nil {
+		if _, err = target.CreateMirror(ctx, source, &repo); err != nil {
 			fmt.Println(repo.Failure(fmt.Errorf("creating: %w", err)))
 		} else {
 			fmt.Println(repo.Success())

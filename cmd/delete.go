@@ -28,13 +28,13 @@ func DeleteMirrors(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	target, err := gitea.NewController(ctx, &config.Target)
+	target, err := gitea.NewController(&config.Target)
 	if err != nil {
 		return fmt.Errorf("NewController(%s): %w", config.Target.Url, err)
 	}
 
 	for repo := range config.FilteredRepositories(args) {
-		if err = target.DeleteMirror(&repo); err != nil {
+		if err = target.DeleteMirror(ctx, &repo); err != nil {
 			fmt.Println(repo.Failure(err))
 		} else {
 			fmt.Println(repo.Success())
