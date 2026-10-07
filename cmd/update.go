@@ -29,18 +29,8 @@ func UpdateMirrors(cmd *cobra.Command, args []string) (err error) {
 	var source server.Server
 
 	if !viper.GetBool("skip-credentials") {
-		needsToken := false
-		for repo := range config.FilteredRepositories(args) {
-			if !*repo.PublicSource {
-				needsToken = true
-				break
-			}
-		}
-
-		if needsToken && config.Source.Token == "" {
-			if err := util.PromptForToken("Source API token", &config.Source.Token); err != nil {
-				return fmt.Errorf("Source API token: %w", err)
-			}
+		if err := promptSourceToken(args); err != nil {
+			return err
 		}
 
 		source, err = newSource(config)

@@ -11,6 +11,7 @@ import (
 	"github.com/nexthink-oss/gitea-mirror/pkg/gitea"
 	"github.com/nexthink-oss/gitea-mirror/pkg/github"
 	"github.com/nexthink-oss/gitea-mirror/pkg/server"
+	"github.com/nexthink-oss/gitea-mirror/pkg/util"
 )
 
 var config *cfg.Config
@@ -81,4 +82,22 @@ func newSource(config *cfg.Config) (server.Server, error) {
 	default:
 		return nil, fmt.Errorf("unsupported source type: %q", config.Source.Type)
 	}
+}
+
+// promptSourceToken prompts for a source token if any selected repository is private and none is configured.
+func promptSourceToken(args []string) error {
+	if config.Source.Token != "" {
+		return nil
+	}
+
+	for repo := range config.FilteredRepositories(args) {
+		if !*repo.PublicSource {
+			if err := util.PromptForToken("Source API token", &config.Source.Token); err != nil {
+				return fmt.Errorf("Source API token: %w", err)
+			}
+			return nil
+		}
+	}
+
+	return nil
 }
